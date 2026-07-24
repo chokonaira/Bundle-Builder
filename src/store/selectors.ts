@@ -24,22 +24,22 @@ export function reviewLines(catalog: Catalog, state: BundleState): ReviewLine[] 
   for (const product of catalog.products) {
     const category = categoryOf(catalog, product.step)
     if (product.variants) {
-      for (const variant of product.variants) {
+      const inBundle = product.variants.filter(
+        (v) => (state.quantities[keyFor(product.id, v.id)] ?? 0) > 0,
+      )
+      for (const variant of inBundle) {
         const key = keyFor(product.id, variant.id)
-        const qty = state.quantities[key] ?? 0
-        if (qty > 0) {
-          lines.push({
-            key,
-            productId: product.id,
-            variantId: variant.id,
-            name: displayName(product, variant),
-            image: variant.image,
-            qty,
-            unitPrice: variant.price,
-            unitCompareAt: variant.compareAtPrice,
-            category,
-          })
-        }
+        lines.push({
+          key,
+          productId: product.id,
+          variantId: variant.id,
+          name: displayName(product, variant, inBundle.length),
+          image: variant.image,
+          qty: state.quantities[key] ?? 0,
+          unitPrice: variant.price,
+          unitCompareAt: variant.compareAtPrice,
+          category,
+        })
       }
     } else {
       const qty = state.quantities[product.id] ?? 0
@@ -65,10 +65,10 @@ export function reviewLines(catalog: Catalog, state: BundleState): ReviewLine[] 
 /**
  * The design shows plain product names in the review panel for the seeded
  * single-variant selections. Variant labels only disambiguate once needed —
- * they're appended when the product has more than one variant in the bundle.
+ * i.e. when two or more variants of the same product are in the bundle.
  */
-function displayName(product: Product, variant: Variant): string {
-  return product.variants!.length > 1 ? `${product.name} (${variant.label})` : product.name
+function displayName(product: Product, variant: Variant, variantsInBundle: number): string {
+  return variantsInBundle > 1 ? `${product.name} (${variant.label})` : product.name
 }
 
 export function groupedReviewLines(
