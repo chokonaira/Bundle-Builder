@@ -40,7 +40,6 @@ export interface Plan {
   step: StepId
   name: string
   description: string
-  image: string
   price: number
   compareAtPrice?: number
   billingPeriod: string
@@ -50,7 +49,6 @@ export interface Plan {
 export interface Perk {
   id: string
   name: string
-  image: string
   price: number
   compareAtPrice?: number
   priceLabel?: string

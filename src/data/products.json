@@ -1,8 +1,23 @@
 {
   "steps": [
-    { "id": "cameras", "title": "Choose your cameras", "icon": "camera", "category": "Cameras" },
-    { "id": "plan", "title": "Choose your plan", "icon": "shield", "category": "Plan" },
-    { "id": "sensors", "title": "Choose your sensors", "icon": "sensor", "category": "Sensors" },
+    {
+      "id": "cameras",
+      "title": "Choose your cameras",
+      "icon": "camera",
+      "category": "Cameras"
+    },
+    {
+      "id": "plan",
+      "title": "Choose your plan",
+      "icon": "shield",
+      "category": "Plan"
+    },
+    {
+      "id": "sensors",
+      "title": "Choose your sensors",
+      "icon": "sensor",
+      "category": "Sensors"
+    },
     {
       "id": "protection",
       "title": "Add extra protection",
@@ -32,7 +47,7 @@
         {
           "id": "grey",
           "label": "Grey",
-          "image": "/images/wyze-cam-v4-grey.png",
+          "image": "/images/wyze-cam-v4.png",
           "compareAtPrice": 35.98,
           "price": 27.98,
           "defaultQty": 0
@@ -40,7 +55,7 @@
         {
           "id": "black",
           "label": "Black",
-          "image": "/images/wyze-cam-v4-black.png",
+          "image": "/images/wyze-cam-v4.png",
           "compareAtPrice": 35.98,
           "price": 27.98,
           "defaultQty": 0
@@ -68,7 +83,7 @@
         {
           "id": "black",
           "label": "Black",
-          "image": "/images/wyze-cam-pan-v3-black.png",
+          "image": "/images/wyze-cam-pan-v3.png",
           "compareAtPrice": 28.99,
           "price": 23.99,
           "defaultQty": 0
@@ -96,7 +111,7 @@
         {
           "id": "black",
           "label": "Black",
-          "image": "/images/wyze-cam-floodlight-v2-black.png",
+          "image": "/images/wyze-cam-floodlight-v2.png",
           "compareAtPrice": 89.98,
           "price": 69.98,
           "defaultQty": 0
@@ -132,7 +147,7 @@
         {
           "id": "black",
           "label": "Black",
-          "image": "/images/wyze-battery-cam-pro-black.png",
+          "image": "/images/wyze-battery-cam-pro.png",
           "price": 89.98,
           "defaultQty": 0
         }
@@ -178,7 +193,6 @@
       "step": "plan",
       "name": "Cam Unlimited",
       "description": "Unlimited cloud storage, AI detection, and smart alerts for all your cameras.",
-      "image": "/images/cam-unlimited.png",
       "compareAtPrice": 12.99,
       "price": 9.99,
       "billingPeriod": "mo",
@@ -189,7 +203,6 @@
     {
       "id": "fast-shipping",
       "name": "Fast Shipping",
-      "image": "/images/fast-shipping.png",
       "compareAtPrice": 5.99,
       "price": 0,
       "priceLabel": "FREE"
