@@ -29,8 +29,10 @@ export function StepSection({ step, index, nextStep }: Props) {
       aria-expanded={expanded}
       aria-controls={panelId}
     >
-      <StepIcon icon={step.icon} className="size-6 text-ink" />
-      <span className="text-[20px] font-semibold tracking-body">{step.title}</span>
+      <StepIcon icon={step.icon} className="size-6 shrink-0 text-ink" />
+      <span className="text-left text-[20px] font-semibold tracking-body max-md:text-[17px]">
+        {step.title}
+      </span>
       <span className="ml-auto flex items-center gap-1.5">
         <span
           className={`text-[14px] font-medium text-brand ${expanded ? '' : 'hidden max-lg:inline'}`}

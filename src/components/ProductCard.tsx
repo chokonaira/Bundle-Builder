@@ -43,7 +43,7 @@ export function ProductCard({ product }: { product: Product }) {
         <img
           src={image}
           alt={product.name}
-          className="h-[110px] w-[104px] shrink-0 self-center object-contain"
+          className="h-[104px] w-[92px] shrink-0 self-center object-contain"
         />
 
         <div className="flex min-w-0 flex-1 flex-col gap-2">

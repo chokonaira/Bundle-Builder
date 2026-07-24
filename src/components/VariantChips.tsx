@@ -23,7 +23,7 @@ export function VariantChips({ variants, activeId, onSelect, productName }: Prop
             role="radio"
             aria-checked={active}
             onClick={() => onSelect(variant.id)}
-            className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[12px] font-medium tracking-body transition-colors ${
+            className={`flex items-center gap-1 rounded-md border px-1.5 py-1 text-[12px] font-medium tracking-body transition-colors ${
               active
                 ? 'border-success bg-success/5 text-ink'
                 : 'border-ink/15 bg-white text-ink hover:border-ink/35'
