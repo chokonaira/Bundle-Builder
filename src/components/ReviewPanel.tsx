@@ -1,19 +1,28 @@
 import { ShieldCheck, Truck } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useBundle } from '../store/BundleProvider'
+import { saveState } from '../store/persistence'
 import { formatPrice, groupedReviewLines, totals } from '../store/selectors'
 import { CheckoutModal } from './CheckoutModal'
 import { GuaranteeBadge } from './GuaranteeBadge'
 import { PriceBlock } from './PriceBlock'
 import { ReviewLine } from './ReviewLine'
 
-interface Props {
-  onSave?: () => void
-}
-
-export function ReviewPanel({ onSave }: Props) {
+export function ReviewPanel() {
   const { catalog, state } = useBundle()
   const [checkoutOpen, setCheckoutOpen] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  useEffect(() => () => clearTimeout(savedTimer.current), [])
+
+  const handleSave = () => {
+    if (saveState(state)) {
+      setSaved(true)
+      clearTimeout(savedTimer.current)
+      savedTimer.current = setTimeout(() => setSaved(false), 2000)
+    }
+  }
 
   const groups = groupedReviewLines(catalog, state)
   const { total, compareAtTotal, savings } = totals(catalog, state)
@@ -102,10 +111,10 @@ export function ReviewPanel({ onSave }: Props) {
 
       <button
         type="button"
-        onClick={onSave}
+        onClick={handleSave}
         className="mx-auto mt-3 block text-[14px] font-medium text-ink/70 underline transition-colors hover:text-ink"
       >
-        Save my system for later
+        {saved ? 'Saved — see you soon!' : 'Save my system for later'}
       </button>
 
       <CheckoutModal open={checkoutOpen} total={total} onClose={() => setCheckoutOpen(false)} />

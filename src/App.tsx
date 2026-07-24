@@ -1,10 +1,16 @@
 import { BuilderAccordion } from './components/BuilderAccordion'
 import { ReviewPanel } from './components/ReviewPanel'
+import { catalog } from './data/catalog'
 import { BundleProvider } from './store/BundleProvider'
+import { loadSavedState } from './store/persistence'
 
 function App() {
+  // Restore a saved system if the shopper left one behind; otherwise the
+  // seed state renders the app exactly as the design shows it.
+  const restored = loadSavedState(catalog)
+
   return (
-    <BundleProvider>
+    <BundleProvider initial={restored ?? undefined}>
       <main className="mx-auto max-w-[1196px] px-4 py-8">
         <h1 className="mb-4 hidden text-center text-[24px] font-semibold max-lg:block">
           Let&rsquo;s get started!
