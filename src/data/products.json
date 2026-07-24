@@ -212,6 +212,8 @@
     "categoryOrder": ["Cameras", "Sensors", "Accessories", "Plan"],
     "financingLabel": "as low as $19.19/mo",
     "savingsTemplate": "Congrats! You're saving {amount} on your security bundle!",
-    "guaranteeLabel": "100% Wyze satisfaction guarantee"
+    "guaranteeLabel": "100% Wyze satisfaction guarantee",
+    "returnsTitle": "30-day hassle-free returns",
+    "returnsCopy": "If you're not totally in love with the product, we will refund you 100%."
   }
 }

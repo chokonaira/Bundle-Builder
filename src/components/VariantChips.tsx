@@ -13,7 +13,7 @@ interface Props {
  */
 export function VariantChips({ variants, activeId, onSelect, productName }: Props) {
   return (
-    <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={`${productName} color`}>
+    <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={`${productName} color`}>
       {variants.map((variant) => {
         const active = variant.id === activeId
         return (
@@ -29,7 +29,7 @@ export function VariantChips({ variants, activeId, onSelect, productName }: Prop
                 : 'border-ink/15 bg-white text-ink hover:border-ink/35'
             }`}
           >
-            <img src={variant.image} alt="" className="size-[18px] object-contain" />
+            <img src={variant.image} alt="" className="size-4 object-contain" />
             {variant.label}
           </button>
         )

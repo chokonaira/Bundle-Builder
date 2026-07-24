@@ -48,14 +48,20 @@ export function StepSection({ step, index, nextStep }: Props) {
     </button>
   )
 
+  // The design keeps the hairline + eyebrow inside the step surface: the
+  // expanded step's lavender box starts flush with the review panel's top
+  // and the "STEP X OF 4" label sits within it.
+  const eyebrow = (
+    <p className="border-t border-ink/80 pt-2 text-[11px] font-medium tracking-[1.5px] text-ink/60 uppercase">
+      Step {index + 1} of {catalog.steps.length}
+    </p>
+  )
+
   return (
     <section aria-label={`Step ${index + 1} of ${catalog.steps.length}: ${step.title}`}>
-      <p className="border-t border-ink/80 pt-2 text-[11px] font-medium tracking-[1.5px] text-ink/60 uppercase">
-        Step {index + 1} of {catalog.steps.length}
-      </p>
-
       {expanded ? (
-        <div className="mt-2 rounded-card bg-lavender px-[15px] py-5">
+        <div className="rounded-card bg-lavender px-[15px] pt-3 pb-5">
+          {eyebrow}
           {header}
           <div id={panelId} className="flex flex-col gap-[15px]">
             {products.length > 0 && (
@@ -66,7 +72,7 @@ export function StepSection({ step, index, nextStep }: Props) {
                     <div
                       key={product.id}
                       className={
-                        centerLastOdd ? 'md:col-span-2 md:mx-auto md:w-[calc(50%-7.5px)]' : ''
+                        centerLastOdd ? 'md:col-span-2 md:mx-auto md:w-[calc(50%-7.5px)]' : 'h-full'
                       }
                     >
                       <ProductCard product={product} />
@@ -94,7 +100,10 @@ export function StepSection({ step, index, nextStep }: Props) {
           </div>
         </div>
       ) : (
-        header
+        <div>
+          {eyebrow}
+          {header}
+        </div>
       )}
     </section>
   )

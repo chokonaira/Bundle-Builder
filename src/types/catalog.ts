@@ -60,6 +60,9 @@ export interface ReviewMeta {
   financingLabel: string
   savingsTemplate: string
   guaranteeLabel: string
+  /** Shown beside the guarantee seal on tablet widths (Frame 1736). */
+  returnsTitle: string
+  returnsCopy: string
 }
 
 export interface Catalog {

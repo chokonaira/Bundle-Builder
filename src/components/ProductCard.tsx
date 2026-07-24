@@ -28,7 +28,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <article
-      className={`relative rounded-card bg-white p-[11px] transition-colors ${
+      className={`relative h-full rounded-card bg-white p-[11px] transition-colors ${
         selected ? 'border-2 border-brand-border' : 'border-2 border-transparent'
       }`}
       data-testid={`card-${product.id}`}
@@ -39,7 +39,7 @@ export function ProductCard({ product }: { product: Product }) {
         </span>
       )}
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex h-full gap-3 pt-4">
         <img
           src={image}
           alt={product.name}
