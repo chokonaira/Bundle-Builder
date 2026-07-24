@@ -27,7 +27,7 @@ export function StepSection({ step, index, nextStep }: Props) {
       className="flex w-full items-center gap-2.5 py-3"
       onClick={() => dispatch({ type: 'toggleStep', step: step.id })}
       aria-expanded={expanded}
-      aria-controls={panelId}
+      aria-controls={expanded ? panelId : undefined}
     >
       <StepIcon icon={step.icon} className="size-6 shrink-0 text-ink" />
       <span className="text-left text-[20px] font-semibold tracking-body max-md:text-[17px]">
@@ -82,7 +82,7 @@ export function StepSection({ step, index, nextStep }: Props) {
               </div>
             )}
             {plans.length > 0 && (
-              <div className="flex flex-col gap-[15px]" role="radiogroup" aria-label="Plans">
+              <div className="flex flex-col gap-[15px]" role="group" aria-label="Plans">
                 {plans.map((plan) => (
                   <PlanCard key={plan.id} plan={plan} />
                 ))}

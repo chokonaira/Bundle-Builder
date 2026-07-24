@@ -6,7 +6,7 @@ import { PriceBlock } from './PriceBlock'
 /**
  * Plan step content. The Figma file only shows this step collapsed, so the
  * layout reuses the product-card pattern with single-select (radio) behavior
- * instead of a quantity stepper — a plan is chosen, not counted.
+ * instead of a quantity stepper, because a plan is chosen, not counted.
  */
 export function PlanCard({ plan }: { plan: Plan }) {
   const { state, dispatch } = useBundle()
@@ -15,8 +15,7 @@ export function PlanCard({ plan }: { plan: Plan }) {
   return (
     <button
       type="button"
-      role="radio"
-      aria-checked={selected}
+      aria-pressed={selected}
       onClick={() => dispatch({ type: 'selectPlan', planId: plan.id })}
       className={`relative flex w-full items-center gap-3 rounded-card bg-white p-[11px] text-left transition-colors ${
         selected ? 'border-2 border-brand-border' : 'border-2 border-transparent'

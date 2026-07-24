@@ -1,4 +1,5 @@
 import { Minus, Plus } from 'lucide-react'
+import { MAX_QTY } from '../store/bundleState'
 
 interface Props {
   qty: number
@@ -39,7 +40,7 @@ export function QuantityStepper({ qty, onChange, disabled = false, label, size =
         type="button"
         className={btnBase}
         onClick={() => onChange(qty + 1)}
-        disabled={disabled}
+        disabled={disabled || qty >= MAX_QTY}
         aria-label={`Increase ${label}`}
       >
         <Plus className="size-3.5" />

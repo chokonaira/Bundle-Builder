@@ -20,7 +20,7 @@ describe('save my system for later', () => {
 
     // save
     await user.click(screen.getByRole('button', { name: /save my system for later/i }))
-    expect(screen.getByText(/saved — see you soon!/i)).toBeInTheDocument()
+    expect(screen.getByText(/saved! see you soon./i)).toBeInTheDocument()
 
     // leave
     first.unmount()

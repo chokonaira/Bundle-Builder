@@ -38,12 +38,14 @@ export function BundleProvider({
   useEffect(() => {
     const controller = new AbortController()
     fetch('/api/products', { signal: controller.signal })
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) =>
+        res.ok && res.headers.get('content-type')?.includes('application/json') ? res.json() : null,
+      )
       .then((remote: Catalog | null) => {
         if (remote?.products?.length) setCatalog(remote)
       })
       .catch(() => {
-        // endpoint not deployed here — local catalog is the source of truth
+        // endpoint not deployed here, the local catalog is the source of truth
       })
     return () => controller.abort()
   }, [])

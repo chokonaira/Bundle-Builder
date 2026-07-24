@@ -7,7 +7,7 @@ interface Props {
   onClose: () => void
 }
 
-/** The brief asks for a placeholder — checkout has nowhere to go. */
+/** The brief asks for a placeholder since checkout has nowhere to go. */
 export function CheckoutModal({ open, total, onClose }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
 
@@ -22,11 +22,14 @@ export function CheckoutModal({ open, total, onClose }: Props) {
     <dialog
       ref={ref}
       onClose={onClose}
+      aria-labelledby="checkout-modal-title"
       className="m-auto w-[360px] max-w-[90vw] rounded-card p-6 shadow-xl backdrop:bg-ink/40"
     >
-      <h2 className="text-[18px] font-semibold tracking-body">Thanks for building your system!</h2>
+      <h2 id="checkout-modal-title" className="text-[18px] font-semibold tracking-body">
+        Thanks for building your system!
+      </h2>
       <p className="mt-2 text-[14px] leading-relaxed text-ink/70">
-        This is a prototype — checkout isn&rsquo;t wired up. Your {formatPrice(total)} bundle is
+        This is a prototype, so checkout isn&rsquo;t wired up. Your {formatPrice(total)} bundle is
         safe right where it is.
       </p>
       <button

@@ -13,15 +13,14 @@ interface Props {
  */
 export function VariantChips({ variants, activeId, onSelect, productName }: Props) {
   return (
-    <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={`${productName} color`}>
+    <div className="flex flex-wrap gap-1.5" role="group" aria-label={`${productName} color`}>
       {variants.map((variant) => {
         const active = variant.id === activeId
         return (
           <button
             key={variant.id}
             type="button"
-            role="radio"
-            aria-checked={active}
+            aria-pressed={active}
             onClick={() => onSelect(variant.id)}
             className={`flex items-center gap-1 rounded-md border px-1.5 py-1 text-[12px] font-medium tracking-body transition-colors ${
               active

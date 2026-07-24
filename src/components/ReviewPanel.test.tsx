@@ -39,8 +39,8 @@ describe('review panel ↔ builder sync', () => {
     render(<App />)
 
     const card = screen.getByTestId('card-wyze-cam-pan-v3')
-    // switch active variant to Black — White's line must survive untouched
-    await user.click(within(card).getByRole('radio', { name: 'Black' }))
+    // switch active variant to Black. White's line must survive untouched
+    await user.click(within(card).getByRole('button', { name: 'Black' }))
     expect(within(card).getByText('0')).toBeInTheDocument()
     expect(screen.getByTestId('review-wyze-cam-pan-v3:white')).toBeInTheDocument()
 

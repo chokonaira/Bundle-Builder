@@ -27,3 +27,12 @@
 body {
   @apply bg-white font-sans text-ink antialiased;
 }
+
+/* Tailwind v4 preflight leaves buttons with the default cursor,
+   but interactive elements should invite the click. */
+button:not(:disabled) {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}

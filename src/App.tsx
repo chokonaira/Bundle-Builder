@@ -12,7 +12,8 @@ function App() {
   return (
     <BundleProvider initial={restored ?? undefined}>
       <main className="mx-auto max-w-[1196px] px-4 py-8">
-        <h1 className="mb-4 hidden text-center text-[24px] font-semibold max-lg:block">
+        {/* Visible heading on mobile per the design; stays in the a11y tree on desktop. */}
+        <h1 className="mb-4 text-center text-[24px] font-semibold lg:sr-only">
           Let&rsquo;s get started!
         </h1>
         <div className="flex gap-[29px] max-lg:flex-col">

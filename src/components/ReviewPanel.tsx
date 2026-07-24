@@ -12,18 +12,22 @@ import { ShippingIcon } from './ShippingIcon'
 export function ReviewPanel() {
   const { catalog, state } = useBundle()
   const [checkoutOpen, setCheckoutOpen] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [saveResult, setSaveResult] = useState<'idle' | 'saved' | 'failed'>('idle')
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => () => clearTimeout(savedTimer.current), [])
 
   const handleSave = () => {
-    if (saveState(state)) {
-      setSaved(true)
-      clearTimeout(savedTimer.current)
-      savedTimer.current = setTimeout(() => setSaved(false), 2000)
-    }
+    setSaveResult(saveState(state) ? 'saved' : 'failed')
+    clearTimeout(savedTimer.current)
+    savedTimer.current = setTimeout(() => setSaveResult('idle'), 2500)
   }
+
+  const saveLabel = {
+    idle: 'Save my system for later',
+    saved: 'Saved! See you soon.',
+    failed: 'Couldn’t save. Check your browser storage settings.',
+  }[saveResult]
 
   const groups = groupedReviewLines(catalog, state)
   const { total, compareAtTotal, savings } = totals(catalog, state)
@@ -56,8 +60,17 @@ export function ReviewPanel() {
                     <ShieldCheck className="size-5 text-brand" aria-hidden="true" />
                   </span>
                   <span className="min-w-0 flex-1 text-[15px] font-semibold tracking-body">
-                    {plan.name.split(' ')[0]}{' '}
-                    <span className="text-brand">{plan.name.split(' ').slice(1).join(' ')}</span>
+                    {/* Design colors everything after the first word purple */}
+                    {plan.name.includes(' ') ? (
+                      <>
+                        {plan.name.slice(0, plan.name.indexOf(' '))}{' '}
+                        <span className="text-brand">
+                          {plan.name.slice(plan.name.indexOf(' ') + 1)}
+                        </span>
+                      </>
+                    ) : (
+                      plan.name
+                    )}
                   </span>
                   <PriceBlock
                     variant="review"
@@ -137,9 +150,10 @@ export function ReviewPanel() {
         <button
           type="button"
           onClick={handleSave}
+          aria-live="polite"
           className="mx-auto mt-3 block text-[14px] font-medium text-ink/70 underline transition-colors hover:text-ink"
         >
-          {saved ? 'Saved — see you soon!' : 'Save my system for later'}
+          {saveLabel}
         </button>
       </div>
 
