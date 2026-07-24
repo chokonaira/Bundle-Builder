@@ -64,7 +64,7 @@ export function reviewLines(catalog: Catalog, state: BundleState): ReviewLine[] 
 
 /**
  * The design shows plain product names in the review panel for the seeded
- * single-variant selections. Variant labels only disambiguate once needed —
+ * single-variant selections. Variant labels only disambiguate once needed,
  * i.e. when two or more variants of the same product are in the bundle.
  */
 function displayName(product: Product, variant: Variant, variantsInBundle: number): string {

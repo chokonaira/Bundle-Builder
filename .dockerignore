@@ -4,4 +4,6 @@ coverage
 .git
 .github
 .claude
+.vercel
+.env*
 *.md

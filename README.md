@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/chokonaira/Bundle-Builder/actions/workflows/ci.yml/badge.svg)](https://github.com/chokonaira/Bundle-Builder/actions/workflows/ci.yml)
 
-A multi-step security-system bundle builder — a four-step accordion on the left, a live review panel on the right, everything in sync. Built with React, TypeScript, and Tailwind from [this Figma design](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=68-8088).
+A multi-step bundle builder for a home security system. Shoppers assemble cameras, a plan, sensors, and extras in a four-step accordion while a live review panel keeps totals in sync. Built with React, TypeScript, and Tailwind from [this Figma design](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=68-8088).
 
-**Live demo → [bundle-builder-sable-six.vercel.app](https://bundle-builder-sable-six.vercel.app)**
+**Live demo:** [bundle-builder-sable-six.vercel.app](https://bundle-builder-sable-six.vercel.app)
 
-## Quick start
+## Getting started
 
 ```bash
 git clone git@github.com:chokonaira/Bundle-Builder.git
@@ -15,9 +15,9 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173. That's it.
+Open http://localhost:5173.
 
-**Prefer Docker?**
+To run it with Docker instead:
 
 ```bash
 docker compose up
@@ -25,7 +25,7 @@ docker compose up
 
 Open http://localhost:8080.
 
-### All scripts
+### Scripts
 
 | Command                | What it does                      |
 | ---------------------- | --------------------------------- |
@@ -38,23 +38,17 @@ Open http://localhost:8080.
 
 ## How it works
 
-- **Everything renders from JSON.** [`src/data/products.json`](src/data/products.json) defines the steps, products, variants, pricing, plan, and perks. No per-product markup anywhere — add a product to the JSON and it shows up. The same JSON is also served by a small Vercel function at [`/api/products`](api/products.ts) (the brief's bonus); the client renders from its local copy instantly and swaps in the API response when the endpoint exists, so Docker and offline runs behave identically.
-- **One store, two views.** A `useReducer` + context store keys every quantity by `productId:variantId`. The product-card steppers and the review-panel steppers write to the same keys, which is what keeps them in sync — there's no syncing code to get wrong.
-- **Variants count independently.** Selecting a color chip only changes which variant the card's stepper edits. Add 2 White, switch to Black — the stepper reads 0, White's 2 stay in the review panel as their own line.
-- **Saved systems restore exactly.** _Save my system for later_ snapshots the state to `localStorage`. On return, the snapshot is validated against the catalog (unknown lines dropped, required items enforced, corrupt data ignored) and hydrated, so the app comes back exactly as it was left.
-- **The seed state is pinned by tests.** The design's pre-populated system ($238.81 → $187.89, saving $50.92) is reproduced by the catalog defaults and asserted in the test suite, digit for digit.
+- The whole catalog lives in [`src/data/products.json`](src/data/products.json): steps, products, variants, pricing, plan, and perks. Components render from that data, so adding a product means editing JSON, not JSX. The same file is served by a small Vercel function at [`/api/products`](api/products.ts) as the brief's bonus; the client starts from its local copy and swaps in the API response when the endpoint is available, so Docker and offline runs work the same.
+- One store (reducer + context) keys every quantity by `productId:variantId`. Card steppers and review-panel steppers write to the same keys, so they can never drift apart.
+- Each color variant has its own count. Add 2 White, switch the card to Black, and the stepper reads 0 while White keeps its own line in the review panel.
+- "Save my system for later" snapshots the state to localStorage. On return the snapshot is checked against the catalog (unknown items dropped, quantities clamped, required items pinned, corrupt data ignored) before it hydrates.
+- The design's pre-seeded totals ($238.81 crossed out, $187.89 final, $50.92 saved) come straight from the catalog defaults and are pinned by tests.
 
-## Design decisions & tradeoffs
+## Decisions and tradeoffs
 
-- **Steps 2–4 are inferred.** The Figma file only shows _Choose your cameras_ expanded; the other steps appear collapsed everywhere. Their expanded layouts reuse the step-1 card pattern with the items the review panel proves exist (sensors, hub, SD card), and the plan step renders as single-select — a plan is chosen, not counted.
-- **A price inconsistency in the design, resolved toward the math.** The Cam Pan v3 _card_ shows $39.98 → $34.98, but the review panel's line ($57.98 → $47.98 at ×2) implies a $28.99 → $23.99 unit price. Both can't be true, so the catalog uses the unit prices that make every total in the design check out exactly.
-- **Font substitution.** The design uses Gilroy, which is a commercial font. DM Sans (closest freely-licensed match) stands in behind a `Gilroy, 'DM Sans', …` stack — drop licensed Gilroy woff2s in and the upgrade is automatic.
-- **Product imagery** comes from Wyze's public store, since the design file is view-only and doesn't allow asset export. Variant chips currently reuse the product's primary image.
-- **Desktop target is Frame 1735** (the frame the brief's link points at). The wider Frame 1736 in the same file reads as an alternate exploration; the responsive behavior between desktop and phone follows standard stacking instead.
-- **Variant-chip selected styling** is minimal by design — the brief explicitly grades the selection-and-quantity behavior, not the chip polish.
-
-## Not done / out of scope
-
-- Checkout is a placeholder dialog, per the brief.
-- _Learn More_ links have no destination yet.
-- The financing line (“as low as $19.19/mo”) is static catalog copy, not a computed quote.
+- The Figma file only shows step 1 expanded. Steps 2 to 4 reuse the same card pattern with the items the review panel proves exist, and the plan step is single-select because a plan is chosen, not counted.
+- The Cam Pan v3 card in the design shows $39.98/$34.98, but the review panel's line math implies a $28.99/$23.99 unit price. Both can't be right, so I used the unit prices that make every total in the design check out exactly.
+- The design's font is Gilroy, which is commercial. DM Sans stands in behind a `Gilroy, 'DM Sans'` font stack, so licensed Gilroy files can be dropped in without code changes.
+- Product images come from Wyze's public store because the Figma file is view-only and doesn't allow asset export.
+- Desktop follows Frame 1735. The wider Frame 1736 shapes the tablet range (768 to 1024px), where the review section moves below the builder with the guarantee seal, returns copy, totals, and checkout on the right.
+- Checkout is a placeholder dialog and the Learn More links have no destination, both per the brief. The financing line is static catalog copy, not a computed quote.
