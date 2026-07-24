@@ -1,10 +1,10 @@
 import type { Catalog } from '../types/catalog'
-import { initialState, keyFor, type BundleState } from './bundleState'
+import { initialState, MAX_QTY, type BundleState } from './bundleState'
 
 const STORAGE_KEY = 'bundle-builder:v1'
 
 /**
- * "Save my system for later" — the saved snapshot is validated against the
+ * "Save my system for later". The saved snapshot is validated against the
  * current catalog on load, so a stale or hand-edited snapshot can never
  * crash the app: unknown lines are dropped, missing ones fall back to 0,
  * and anything unreadable falls back to the seed state entirely.
@@ -14,7 +14,7 @@ export function saveState(state: BundleState): boolean {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     return true
   } catch {
-    // storage full or blocked (private mode) — nothing sensible to do
+    // storage full or blocked (private mode), nothing sensible to do
     return false
   }
 }
@@ -39,16 +39,23 @@ export function loadSavedState(catalog: Catalog): BundleState | null {
   const candidate = parsed as Partial<BundleState>
   const base = initialState(catalog)
 
-  // Only accept quantities for lines the catalog actually knows about.
+  // Only accept quantities for lines the catalog actually knows about, and
+  // only sane ones: integers between 0 and MAX_QTY. Anything else (negative,
+  // fractional, Infinity, 1e999…) falls back to 0.
   const quantities: BundleState['quantities'] = {}
   for (const key of Object.keys(base.quantities)) {
     const value = candidate.quantities?.[key]
-    quantities[key] = typeof value === 'number' && value >= 0 ? Math.floor(value) : 0
+    quantities[key] =
+      typeof value === 'number' && Number.isInteger(value) && value >= 0
+        ? Math.min(value, MAX_QTY)
+        : 0
   }
-  // Required items can't have been removed.
+  // Required items are pinned to their catalog quantity: a snapshot can
+  // neither remove them nor inflate them (their steppers are disabled, so
+  // an inflated count would be uncorrectable in the UI).
   for (const product of catalog.products) {
-    if (product.required) {
-      quantities[product.id] = Math.max(quantities[product.id], product.defaultQty ?? 1)
+    if (product.required && !product.variants) {
+      quantities[product.id] = product.defaultQty ?? 1
     }
   }
 
@@ -65,9 +72,11 @@ export function loadSavedState(catalog: Catalog): BundleState | null {
     ? (candidate.planId as string)
     : base.planId
 
-  const openStep = catalog.steps.some((s) => s.id === candidate.openStep)
-    ? (candidate.openStep as BundleState['openStep'])
-    : base.openStep
+  // null is a valid saved state: every step collapsed.
+  const openStep =
+    candidate.openStep === null || catalog.steps.some((s) => s.id === candidate.openStep)
+      ? (candidate.openStep as BundleState['openStep'])
+      : base.openStep
 
   return { quantities, activeVariants, planId, openStep }
 }
@@ -80,4 +89,4 @@ export function clearSavedState(): void {
   }
 }
 
-export { STORAGE_KEY, keyFor }
+export { STORAGE_KEY }

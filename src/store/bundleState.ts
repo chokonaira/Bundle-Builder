@@ -3,13 +3,16 @@ import type { Catalog, StepId } from '../types/catalog'
 /**
  * A line is one purchasable unit-count: either a variantless product
  * (key = productId) or a single variant (key = `productId:variantId`).
- * Variants track quantity independently — switching the active color
+ * Variants track quantity independently: switching the active color
  * never touches another color's count.
  */
 export type LineKey = string
 
 export const keyFor = (productId: string, variantId?: string): LineKey =>
   variantId ? `${productId}:${variantId}` : productId
+
+/** Sanity ceiling for any single line, keeping totals readable and snapshots honest. */
+export const MAX_QTY = 99
 
 export interface BundleState {
   /** Quantity per line (product or product:variant). */
@@ -28,7 +31,6 @@ export type BundleAction =
   | { type: 'selectPlan'; planId: string }
   | { type: 'toggleStep'; step: StepId }
   | { type: 'openStep'; step: StepId }
-  | { type: 'hydrate'; state: BundleState }
 
 export function initialState(catalog: Catalog): BundleState {
   const quantities: Record<LineKey, number> = {}
@@ -56,7 +58,7 @@ export function initialState(catalog: Catalog): BundleState {
 export function bundleReducer(state: BundleState, action: BundleAction): BundleState {
   switch (action.type) {
     case 'setQuantity': {
-      const qty = Math.max(0, action.qty)
+      const qty = Math.min(Math.max(0, action.qty), MAX_QTY)
       if (state.quantities[action.key] === qty) return state
       return { ...state, quantities: { ...state.quantities, [action.key]: qty } }
     }
@@ -74,8 +76,6 @@ export function bundleReducer(state: BundleState, action: BundleAction): BundleS
       return { ...state, openStep: state.openStep === action.step ? null : action.step }
     case 'openStep':
       return { ...state, openStep: action.step }
-    case 'hydrate':
-      return action.state
     default:
       return state
   }

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { catalog } from '../data/catalog'
-import { initialState, keyFor } from './bundleState'
+import { initialState, keyFor, MAX_QTY } from './bundleState'
 import { clearSavedState, loadSavedState, saveState, STORAGE_KEY } from './persistence'
 
 describe('persistence', () => {
@@ -40,19 +40,45 @@ describe('persistence', () => {
     expect(restored.quantities['discontinued-product']).toBeUndefined()
   })
 
-  it('sanitizes negative and fractional quantities', () => {
+  it('sanitizes negative, fractional, and non-finite quantities', () => {
     const state = initialState(catalog)
     saveState({
       ...state,
       quantities: { ...state.quantities, [keyFor('wyze-cam-v4', 'white')]: -3 },
     })
     expect(loadSavedState(catalog)!.quantities[keyFor('wyze-cam-v4', 'white')]).toBe(0)
+
+    // raw 1e999 parses to Infinity and must not survive into state
+    localStorage.setItem(STORAGE_KEY, '{"quantities":{"wyze-cam-v4:white":1e999}}')
+    expect(loadSavedState(catalog)!.quantities[keyFor('wyze-cam-v4', 'white')]).toBe(0)
+
+    localStorage.setItem(STORAGE_KEY, '{"quantities":{"wyze-cam-v4:white":2.5}}')
+    expect(loadSavedState(catalog)!.quantities[keyFor('wyze-cam-v4', 'white')]).toBe(0)
   })
 
-  it('never lets a required item drop below its default', () => {
+  it('clamps absurdly large quantities to the ceiling', () => {
+    const state = initialState(catalog)
+    saveState({
+      ...state,
+      quantities: { ...state.quantities, [keyFor('wyze-cam-v4', 'white')]: 100000 },
+    })
+    expect(loadSavedState(catalog)!.quantities[keyFor('wyze-cam-v4', 'white')]).toBe(MAX_QTY)
+  })
+
+  it('pins required items to their catalog quantity in both directions', () => {
     const state = initialState(catalog)
     saveState({ ...state, quantities: { ...state.quantities, 'wyze-sense-hub': 0 } })
     expect(loadSavedState(catalog)!.quantities['wyze-sense-hub']).toBe(1)
+
+    // the hub's steppers are disabled, so an inflated count would be stuck
+    saveState({ ...state, quantities: { ...state.quantities, 'wyze-sense-hub': 50 } })
+    expect(loadSavedState(catalog)!.quantities['wyze-sense-hub']).toBe(1)
+  })
+
+  it('round-trips a fully collapsed accordion', () => {
+    const state = initialState(catalog)
+    saveState({ ...state, openStep: null })
+    expect(loadSavedState(catalog)!.openStep).toBeNull()
   })
 
   it('falls back to defaults for unknown variant or plan ids', () => {

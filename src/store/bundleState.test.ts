@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { catalog } from '../data/catalog'
-import { bundleReducer, initialState, keyFor, type BundleState } from './bundleState'
+import { bundleReducer, initialState, keyFor, MAX_QTY } from './bundleState'
 import { activeQty, isProductSelected, stepSelectedCount, totals } from './selectors'
 
 const seed = () => initialState(catalog)
@@ -123,15 +123,14 @@ describe('accordion', () => {
   })
 })
 
-describe('hydrate', () => {
-  it('replaces state wholesale (persistence restore)', () => {
-    const saved: BundleState = {
-      ...seed(),
-      quantities: { ...seed().quantities, [keyFor('wyze-cam-v4', 'grey')]: 5 },
-      openStep: 'sensors',
-    }
-    const state = bundleReducer(seed(), { type: 'hydrate', state: saved })
-    expect(state.quantities[keyFor('wyze-cam-v4', 'grey')]).toBe(5)
-    expect(state.openStep).toBe('sensors')
+describe('quantity ceiling', () => {
+  it('caps a line at MAX_QTY no matter how often + is clicked', () => {
+    let state = seed()
+    state = bundleReducer(state, {
+      type: 'setQuantity',
+      key: keyFor('wyze-cam-v4', 'white'),
+      qty: MAX_QTY + 10,
+    })
+    expect(state.quantities[keyFor('wyze-cam-v4', 'white')]).toBe(MAX_QTY)
   })
 })
