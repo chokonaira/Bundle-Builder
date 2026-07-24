@@ -57,6 +57,8 @@ export interface Perk {
 }
 
 export interface ReviewMeta {
+  /** Order of category groups in the review panel. */
+  categoryOrder: string[]
   financingLabel: string
   savingsTemplate: string
   guaranteeLabel: string
