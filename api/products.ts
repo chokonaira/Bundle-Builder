@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import products from '../src/data/products.json'
+import products from '../src/data/products.json' with { type: 'json' }
 
 /**
  * Bonus endpoint from the brief: the same catalog JSON, served by a tiny
